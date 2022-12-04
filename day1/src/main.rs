@@ -1,32 +1,26 @@
-use std::fs;
+use day1::get_summed_calories;
+use shared::load_input;
 
 fn main() {
-    let file = fs::read_to_string("./input.txt")
-        .expect("Failed to read the file");
-    let elves = file.split("\n\n");
-    let mut calories_per_elf: Vec<u32> = Vec::new();
-
-    for elf in elves {
-        let mut calories = 0;
-
-        for cal in elf.split("\n") {
-            if cal == "" {
-                continue;
-            };
-            match cal.parse::<u32>() {
-                Ok(num) => calories += num,
-                Err(_) => println!(
-                    "Error parsing number: {}",
-                    cal
-                ),
-            }
-        }
-
-        calories_per_elf.push(calories)
-    }
+    let mut calories_per_elf = get_summed_calories(
+        load_input("input_data/day1.txt"),
+    );
 
     println!(
         "Biggest calories: {}",
         calories_per_elf.iter().max().unwrap()
+    );
+
+    calories_per_elf.sort();
+
+    println!(
+        "Sum of 3 biggest calories: {:?}",
+        calories_per_elf
+            .iter()
+            .rev()
+            .collect::<Vec<&u32>>()[0..3]
+            .to_owned()
+            .iter()
+            .fold(0, |acc, num| acc + num.to_owned())
     )
 }
